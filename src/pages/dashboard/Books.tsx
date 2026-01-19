@@ -244,7 +244,7 @@ function Books() {
             <h1 className="text-center">Books</h1>
 
             <Button classname="bg-blue-700" onClick={handleOpenAdd}>
-                Add Book
+                Add new Book
             </Button>
 
             <div className="grid grid-cols-3 gap-1 mt-4">
