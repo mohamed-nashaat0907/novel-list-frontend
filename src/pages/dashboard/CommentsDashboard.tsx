@@ -30,7 +30,7 @@ const CommentsPage = () => {
     return data;
   };
 
-  const { data,  refetch } = useQuery({
+  const { data, refetch ,isLoading,error} = useQuery({
     queryKey: ["admin-comments", status, page],
     queryFn: getAllComments,
     enabled: !!isAdmin && !!isAuthenticated && !!token,
@@ -63,7 +63,8 @@ const CommentsPage = () => {
       toast.success("تم حذف التعليق بنجاح");
       refetch();
     } catch (err) {
-      toast.error("فشل حذف التعليق");
+      const erroraxios = err as AxiosError<{ message: string }>;
+      toast.error( erroraxios?.response?.data?.message || "فشل حذف التعليق");
     }
   };
 
@@ -74,7 +75,13 @@ const CommentsPage = () => {
       day: "numeric",
     });
 
- 
+
+  if (isLoading) return <IsLoading message="جاري تحميل التعليقات..." />;
+  if (error) {
+    const err = error as AxiosError<{ message: string }>;
+    return <ErrorHandler statusCode={err.status || 500} title={err.message || "خطأ غير متوقع"} />;
+  }
+
 
   return (
     <div className="p-6 bg-gray-100 min-h-screen flex flex-col">
