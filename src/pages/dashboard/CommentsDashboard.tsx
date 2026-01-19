@@ -63,7 +63,8 @@ const CommentsPage = () => {
       toast.success("تم حذف التعليق بنجاح");
       refetch();
     } catch (err) {
-      toast.error("فشل حذف التعليق");
+      const error = err as AxiosError<{ message: string }>;
+      toast.error(error?.response?.data?.message || "فشل حذف التعليق");
     }
   };
 

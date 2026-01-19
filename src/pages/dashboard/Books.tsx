@@ -19,6 +19,9 @@ import { AxiosError } from "axios";
 import InputErrorMessage from "../../components/ui/InputErrorMessage";
 
 
+import IsLoading from "../loading/IsLoading";
+import ErrorHandler from "../errors/ErrorHandler";
+
 // ----------- ADD Schema -----------
 const addSchema = z.object({
     title: z.string().nonempty("title is required"),
@@ -159,7 +162,7 @@ function Books() {
         } catch (error) {
             const err = error as AxiosError<{ message: string }>;
             console.log(err);
-            
+
             toast.error(err?.message || 'Operation Fail', {
                 position: 'top-center',
                 style: { backgroundColor: 'black', color: 'white', width: 'fit-content' }
@@ -227,6 +230,12 @@ function Books() {
 
     const products: IProduct[] = data?.data ?? [];
 
+
+    if (isLoading) return <IsLoading message="books are loading" />;
+    if (error) {
+        const err = error as AxiosError<{ message: string }>;
+        return <ErrorHandler statusCode={err.status || 500} title={err.message || "خطأ غير متوقع"} />;
+    }
 
     return (
         <div className="w-full">
