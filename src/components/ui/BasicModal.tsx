@@ -9,10 +9,10 @@ interface IProps {
   children?: ReactNode;
 }
 
-function BasicModal({ isOpen, closeModal, children }: IProps) {
+function BasicModal({ isOpen, closeModal, children , title }: IProps) {
   return (
     <Transition appear show={isOpen} as={Fragment}>
-      <Dialog as="div" className="relative z-10" onClose={closeModal}>
+      <Dialog as="div" className="relative z-20"  onClose={closeModal}>
         <TransitionChild
           as={Fragment}
           enter="ease-out duration-300"
@@ -41,9 +41,10 @@ function BasicModal({ isOpen, closeModal, children }: IProps) {
                   as="h3"
                   className="text-lg font-medium leading-6 text-gray-900 text-center capitalize"
                 >
-                  welcome admin
+                  {title}
                 </DialogTitle>
-                
+
+
                 {children}
               </DialogPanel>
             </TransitionChild>

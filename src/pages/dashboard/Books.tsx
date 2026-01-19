@@ -22,6 +22,7 @@ import InputErrorMessage from "../../components/ui/InputErrorMessage";
 import IsLoading from "../loading/IsLoading";
 import ErrorHandler from "../errors/ErrorHandler";
 
+
 // ----------- ADD Schema -----------
 const addSchema = z.object({
     title: z.string().nonempty("title is required"),
@@ -92,7 +93,7 @@ function Books() {
 
     const schema = isEdit ? editSchema : addSchema;
 
-    const { data, error, refetch } = useQuery({
+    const { data,  refetch } = useQuery({
         queryKey: ["products", token],
         queryFn: async () => {
             const { data } = await axiosInstance.get("/products", {
@@ -197,7 +198,7 @@ function Books() {
                         Authorization: `Bearer ${token}`,
                         "Content-Type": "multipart/form-data",
                     },
-                    timeout: 20000,
+                    timeout: 60000,
                 });
                 alert("Book added successfully");
 
@@ -208,7 +209,7 @@ function Books() {
                         Authorization: `Bearer ${token}`,
                         "Content-Type": "multipart/form-data",
                     },
-                    timeout: 20000,
+                    timeout: 60000,
 
 
                 });
@@ -231,11 +232,12 @@ function Books() {
     const products: IProduct[] = data?.data ?? [];
 
 
-    if (isLoading) return <IsLoading message="books are loading" />;
-    if (error) {
-        const err = error as AxiosError<{ message: string }>;
-        return <ErrorHandler statusCode={err.status || 500} title={err.message || "خطأ غير متوقع"} />;
-    }
+    // if (isLoading) return <IsLoading message="جاري تحميل التعليقات..." />;
+    // if (error) {
+    //     const err = error as AxiosError<{ message: string }>;
+    //     return <ErrorHandler statusCode={err.status || 500} title={err.message || "خطأ غير متوقع"} />;
+    // }
+
 
     return (
         <div className="w-full">
