@@ -131,6 +131,7 @@ function Browse() {
                     const isInCart = cartItems?.some(item => item.productId === id) ?? false;
                     const isAdded = addedProducts[id] !== undefined;
                     const isWhislist = wishlistItems?.some(item => item.productId === id);
+                    const isOutOfStock = quantity === 0;
 
                     return (
                         <div key={id} className="flex flex-col gap-3 border rounded-lg p-4 shadow hover:shadow-lg transition duration-300 bg-white">
@@ -161,16 +162,22 @@ function Browse() {
                             {/* أزرار السلة والمفضلة */}
                             {!isInCart ? (
                                 !isAdded ? (
-                                    <div className="flex items-center gap-2 mt-2">
-                                        <Button className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 rounded" onClick={() => {
-                                            if (!isAuthenticated || !token) {
-                                                alert("Please log in to add items to your cart.");
-                                                return;
-                                            }
-                                            setAddedProducts(prev => ({ ...prev, [id]: 1 }))
-                                        }}>
-                                            Add to Cart
-                                        </Button>
+                                    <div className="flex items-center justify-between gap-2 mt-2 ">
+                                        {
+                                            isOutOfStock ? (
+                                                <p className="text-red-600 font-medium">Out of Stock</p>
+                                            ) : (
+                                                <Button className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 rounded" onClick={() => {
+                                                    if (!isAuthenticated || !token) {
+                                                        alert("Please log in to add items to your cart.");
+                                                        return;
+                                                    }
+                                                    setAddedProducts(prev => ({ ...prev, [id]: 1 }))
+                                                }}>
+                                                    Add to Cart
+                                                </Button>
+                                            )
+                                        }
                                         <svg
                                             xmlns="http://www.w3.org/2000/svg"
                                             fill={isWhislist ? "red" : "none"}
@@ -191,6 +198,7 @@ function Browse() {
                                                 id={`quantity-${id}`}
                                                 type="number"
                                                 min={1}
+                                                max={quantity}
                                                 value={addedProducts[id]}
                                                 onChange={e => setAddedProducts(prev => ({ ...prev, [id]: Math.max(1, Number(e.target.value)) }))}
                                                 className="w-16 text-center border rounded"
@@ -201,6 +209,7 @@ function Browse() {
                                             onClick={() => {
                                                 addtocart({ productId: id, quantity: addedProducts[id] });
                                                 setAddedProducts(prev => { const copy = { ...prev }; delete copy[id]; return copy; });
+                                                
                                             }}
                                         >
                                             Confirm
@@ -220,12 +229,12 @@ function Browse() {
                                             onClick={() => {
 
                                                 if (!isAuthenticated || !token) {
-                                                alert("Please log in to add items to your cart.");
-                                                return;
-                                            }
+                                                    alert("Please log in to add items to your cart.");
+                                                    return;
+                                                }
                                                 handleCommentClick(id)
                                             }}
-                                             
+
                                             disabled={commentCheck[id]?.isReviewed || commentCheck[id]?.isBought === false}
                                         >
                                             Add Comment

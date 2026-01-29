@@ -21,6 +21,8 @@ import InputErrorMessage from "../../components/ui/InputErrorMessage";
 
 
 
+
+
 // ----------- ADD Schema -----------
 const addSchema = z.object({
     title: z.string().nonempty("title is required"),
@@ -91,7 +93,7 @@ function Books() {
 
     const schema = isEdit ? editSchema : addSchema;
 
-    const { data,  refetch } = useQuery({
+    const { data, refetch } = useQuery({
         queryKey: ["products", token],
         queryFn: async () => {
             const { data } = await axiosInstance.get("/products", {
@@ -198,7 +200,17 @@ function Books() {
                     },
                     timeout: 60000,
                 });
-                alert("Book added successfully");
+
+                toast.success("book added successfully", {
+                    position: "top-center",
+                    duration: 1500,
+                    style: {
+                        backgroundColor: "black",
+                        color: "white",
+                        width: "fit-content",
+                    }
+                    ,
+                });
 
             } else {
                 // -------- EDIT --------
@@ -218,8 +230,21 @@ function Books() {
             handleCloseModal();
 
         } catch (error) {
-            const err = error as AxiosError<{ errors: { msg: string }[] }>;
-            alert(err.response?.data?.errors?.[0]?.msg || "Operation failed");
+            const err = error as AxiosError<{ message: string; errors?: { msg: string }[] }>;
+            console.log(err);
+
+            // Handle both validation errors and custom AppError
+            const errorMsg =
+                err.response?.data?.errors?.[0]?.msg ||
+                err.response?.data?.message ||
+                err.message ||
+                "Operation failed";
+
+            toast.error(errorMsg || 'Operation Fail', {
+                position: 'top-center',
+                style: { backgroundColor: 'black', color: 'white', width: 'fit-content' }
+            });
+
 
         } finally {
             setIsLoading(false);
